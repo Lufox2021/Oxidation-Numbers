@@ -1,7 +1,7 @@
 const C=require('./all.js');
 (async()=>{
 let bad=0;
-for(const lv in C.PROBLEMS)for(const [f,n] of C.PROBLEMS[lv]){
+for(const lv of [1,2,3,4,5])for(const [f,n] of C.PROBLEMS[lv]){
  try{const a=C.analyze(f);
   const s=a.slots.map(s=>`${s.label}=${s.value.str()}[${s.rule}]`).join('  ');
   const sc=await C.buildScene(a,false);
