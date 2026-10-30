@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oxidation Number Workshop</title>
+<style>
+:root{--ink:#1c2430;--muted:#5d6878;--line:#dde3ea;--bg:#f5f7fa;--card:#fff;--navy:#1f3a5f;--accent:#2f6fb2;--ok:#15803d;--okbg:#eaf7ee;--bad:#b42318;--badbg:#fdeceb;--warn:#8a5a00;--warnbg:#fff6e0;--pos:#2563eb;--neg:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:var(--navy);color:#fff;padding:18px 28px 0}
+header h1{margin:0;font-size:24px;font-weight:650;letter-spacing:.2px}
+header p{margin:2px 0 12px;color:#c9d6e6;font-size:14px}
+nav{display:flex;gap:4px}
+nav button{background:transparent;border:0;color:#c9d6e6;font:inherit;font-weight:600;padding:10px 18px;border-radius:8px 8px 0 0;cursor:pointer}
+nav button.on{background:var(--bg);color:var(--navy)}
+nav button:hover:not(.on){color:#fff}
+main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
+.tab{display:none}.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+h2{font-size:19px;margin:0 0 10px;color:var(--navy)}
+h3{font-size:16px;margin:16px 0 8px;color:var(--navy)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:600;background:#f8fafc}
+.rules td:first-child{font-weight:700;color:var(--accent);width:36px}
+.rules td:nth-child(2) b{display:block}
+.ex{font-family:"Cambria Math","Times New Roman",serif;font-size:15px;color:#33415a}
+.muted{color:var(--muted)}.small{font-size:13px}
+button.btn{font:inherit;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer}
+button.btn:hover{filter:brightness(1.08)}
+button.btn.ghost{background:#fff;color:var(--accent)}
+button.btn:disabled{opacity:.45;cursor:default}
+input[type=text]{font:inherit;padding:7px 10px;border:1px solid #c3ccd8;border-radius:8px;outline:none}
+input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px #2f6fb233}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid #c3ccd8}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--accent);border-radius:9px;overflow:hidden}
+.seg button{font:inherit;font-weight:600;border:0;background:#fff;color:var(--accent);padding:7px 14px;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.formula{font-family:"Cambria Math","Times New Roman",serif;font-size:34px;line-height:1.2;margin:4px 0 0}
+.formula sub{font-size:60%}.formula sup{font-size:60%}
+.name{color:var(--muted);margin-bottom:6px}
+.slots td{vertical-align:middle}
+.slots input{width:96px;text-align:center;font-weight:600}
+.slots input.ok{border-color:var(--ok);background:var(--okbg)}
+.slots input.bad{border-color:var(--bad);background:var(--badbg)}
+.fb{font-size:14px;max-width:520px}
+.fb .ok{color:var(--ok);font-weight:600}.fb .bad{color:var(--bad);font-weight:600}
+.fbbox{border-radius:8px;padding:6px 10px;margin-top:2px}
+.fbbox.hint{background:var(--warnbg);color:var(--warn)}
+.fbbox.rule{background:#eef4fb;color:#22446e}
+.fbbox.ans{background:#f2f2f6;color:#333}
+.sum{margin-top:12px;padding:10px 12px;border-radius:8px;background:#f8fafc;border:1px dashed #c3ccd8;font-size:14px}
+.sum.good{border-color:var(--ok);background:var(--okbg)}
+.banner{padding:10px 14px;border-radius:8px;margin:12px 0;font-weight:600}
+.banner.ok{background:var(--okbg);color:var(--ok)}.banner.bad{background:var(--badbg);color:var(--bad)}.banner.info{background:#eef4fb;color:#22446e}
+.err{color:var(--bad);font-weight:600;margin-top:8px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:980px){.grid2{grid-template-columns:1fr}}
+.viewer{position:relative;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
+.viewer canvas{display:block;width:100%;height:480px;cursor:grab;touch-action:none}
+.viewer canvas:active{cursor:grabbing}
+.vbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.vbar label{display:flex;gap:4px;align-items:center;cursor:pointer}
+.legend span{display:inline-block;padding:1px 7px;border-radius:9px;color:#fff;font-weight:700;font-size:12px;margin-right:4px}
+.expl li{margin-bottom:6px}
+.levels{display:flex;gap:8px;flex-wrap:wrap}
+.levels button{font:inherit;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;min-width:170px}
+.levels button b{display:block;color:var(--navy)}
+.levels button span{font-size:12px;color:var(--muted)}
+.levels button.on{border-color:var(--accent);box-shadow:0 0 0 2px #2f6fb244;background:#f3f8fe}
+.score{font-size:14px;color:var(--muted)}
+.score b{color:var(--ink)}
+code{background:#eef2f7;padding:1px 5px;border-radius:5px;font-size:13px}
+.pill{display:inline-block;background:#eef4fb;color:#22446e;border-radius:10px;padding:0 8px;font-size:12px;font-weight:600}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+.fallback{padding:18px;font-family:"Cambria Math","Times New Roman",serif;font-size:20px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Oxidation Number Workshop</h1>
+  <p>Learn to assign oxidation numbers to every atom in a formula</p>
+  <nav id="nav"><button data-t="review" class="on">Review</button><button data-t="coach">Coaching</button><button data-t="test">Testing</button></nav>
+</header>
+<main>
+<!-- ================= REVIEW ================= -->
+<section class="tab on" id="tab-review">
+  <div class="card">
+    <h2>Rules for assigning oxidation numbers</h2>
+    <p class="muted">Apply the rules from the top down. When two rules conflict, the one higher in the list wins. Rule 3 (the sum rule) is how you find whatever is left over.</p>
+    <table class="rules" id="rulesTable"><thead><tr><th>#</th><th>Rule</th><th>Example</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h2>Common ligands</h2>
+      <table><thead><tr><th>Ligand</th><th>Name</th><th>Charge</th></tr></thead><tbody id="ligTable"></tbody></table>
+    </div>
+    <div class="card">
+      <h2>Common polyatomic ions</h2>
+      <table><thead><tr><th>Ion</th><th>Name</th></tr></thead><tbody id="ionTable"></tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Typing formulas in this tool</h2>
+    <table><thead><tr><th>What</th><th>Type it like this</th></tr></thead><tbody>
+      <tr><td>Neutral compound</td><td><code>K2Cr2O7</code>, <code>Fe2(SO4)3</code></td></tr>
+      <tr><td>Ion (use ^ before the charge)</td><td><code>SO4^2-</code>, <code>NH4^+</code>, <code>Fe^3+</code> (also <code>NH4+</code>, <code>OH-</code>)</td></tr>
+      <tr><td>Coordination compound</td><td><code>[Co(NH3)5Cl]Cl2</code>, <code>K4[Fe(CN)6]</code>, <code>[Co(en)3]Cl3</code></td></tr>
+      <tr><td>Hydrate</td><td><code>CuSO4*5H2O</code> or <code>CuSO4·5H2O</code></td></tr>
+      <tr><td>Organic molecule (Coaching: choose “Organic”)</td><td>A name such as <code>ethanol</code> or <code>acetone</code>, or a SMILES string such as <code>CCO</code>, <code>CC(=O)O</code>, <code>c1ccccc1</code>. Names not in the built-in list are looked up on PubChem (needs internet).</td></tr>
+      <tr><td>Your answers</td><td><code>+3</code>, <code>-2</code>, <code>0</code>, fractions <code>8/3</code> or decimals <code>2.67</code></td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ================= COACHING ================= -->
+<section class="tab" id="tab-coach">
+  <div class="card">
+    <h2>Coaching</h2>
+    <div class="row" style="margin-bottom:12px">
+      <div class="seg" id="coachMode"><button data-m="own" class="on">My own compound</button><button data-m="pick">Pick one for me</button></div>
+    </div>
+    <div id="coachOwn" class="row">
+      <select id="ownType"><option value="f">Formula (inorganic)</option><option value="o">Organic: name or SMILES</option></select>
+      <input type="text" id="ownInput" placeholder="e.g. Fe2(SO4)3 or Cr2O7^2-" style="width:300px" autocomplete="off" spellcheck="false">
+      <button class="btn" id="ownGo">Start</button>
+      <span class="small muted" id="ownHelp">See the Review tab for how to type ions and complexes.</span>
+    </div>
+    <div id="coachPick" class="row" style="display:none">
+      <select id="pickType"><option value="i">Inorganic compounds</option><option value="o">Organic compounds</option></select>
+      <label id="pickLevelWrap">Level <select id="pickLevel"><option value="0">Any inorganic level</option></select></label>
+      <button class="btn" id="pickGo">New compound</button>
+    </div>
+    <div id="coachErr" class="err"></div>
+  </div>
+  <div id="coachWork"></div>
+</section>
+
+<!-- ================= TESTING ================= -->
+<section class="tab" id="tab-test">
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Testing</h2><div class="score" id="score"></div></div>
+    <p class="muted small" style="margin:4px 0 12px">Choose a level. Enter an oxidation number for every atom, then submit. You have unlimited attempts.</p>
+    <div class="levels" id="levels"></div>
+  </div>
+  <div id="testWork"></div>
+</section>
+</main>
+
+<script>
+/*CHEM*/
+</script>
+<script>
+// ===================== 3D Viewer =====================
+const COLORS={C:'#2b2b2b',O:'#e0312b',N:'#2e5be0',H:'#ffffff',S:'#f1d02b',P:'#c8c8c8',Cl:'#2fb84a',Br:'#8e3fb5',I:'#f08a1c',F:'#9be15d',
+ Li:'#cc80ff',Na:'#ab5cf2',K:'#8f40d4',Cs:'#57178f',Rb:'#702eb0',Mg:'#7a9a3a',Ca:'#6b8e9e',Sr:'#4f7f6f',Ba:'#00a88f',Al:'#bfa6a6',Fe:'#e06633',Co:'#f090a0',Ni:'#50b050',Cu:'#c88033',Zn:'#7d80b0',
+ Cr:'#8a99c7',Mn:'#9c7ac7',Pt:'#9aa0b8',Pd:'#006985',Ag:'#a8a8b8',Au:'#e6b800',Pb:'#575961',Sn:'#668080',Xe:'#42b2c8',Hg:'#9a9ab8',B:'#f2a0a0',Si:'#d8b48a',Ti:'#a0a4aa',V:'#a6a6ab',Cd:'#ffd98f',Sb:'#9e63b5',As:'#bd80e3',Se:'#ffa100'};
+function lum(hex){const n=parseInt(hex.slice(1),16);return(0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255}
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(k>0?v+(255-v)*k:v*(1+k))));return`rgb(${f(r)},${f(g)},${f(b)})`}
+class Viewer{
+  constructor(wrap){
+    this.wrap=wrap;wrap.innerHTML=`<canvas></canvas><div class="vbar"><label><input type="checkbox" data-o="labels" checked> Oxidation numbers</label><label><input type="checkbox" data-o="hideH"> Hide H labels</label><label><input type="checkbox" data-o="sym" checked> Element symbols</label><button class="btn ghost" style="padding:3px 10px;font-size:13px" data-o="reset">Reset view</button><span class="legend" data-o="legend"></span><span data-o="src" style="margin-left:auto"></span><span style="width:100%" class="small">Drag to rotate · scroll to zoom</span></div>`;
+    this.c=wrap.querySelector('canvas');this.ctx=this.c.getContext('2d');this.opt={labels:true,hideH:false,sym:true};this.reset();
+    wrap.querySelectorAll('input[data-o]').forEach(i=>i.onchange=()=>{this.opt[i.dataset.o]=i.checked;this.draw()});
+    wrap.querySelector('[data-o=reset]').onclick=()=>{this.reset();this.draw()};
+    let drag=null;
+    this.c.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];this.c.setPointerCapture(e.pointerId)});
+    this.c.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag[0],dy=e.clientY-drag[1];drag=[e.clientX,e.clientY];
+      this.R=mm(rotAxis([0,1,0],dx*0.01),mm(rotAxis([1,0,0],dy*0.01),this.R));this.draw()});
+    this.c.addEventListener('pointerup',()=>drag=null);
+    this.c.addEventListener('wheel',e=>{e.preventDefault();this.zoom*=Math.exp(-e.deltaY*0.0015);this.zoom=Math.max(0.3,Math.min(5,this.zoom));this.draw()},{passive:false});
+    if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>this.draw()).observe(this.c);
+  }
+  reset(){this.R=mm(rotAxis([1,0,0],0.35),rotAxis([0,1,0],-0.45));this.zoom=1}
+  set(scene,labelFn,legendHtml,srcText){this.scene=scene;this.labelFn=labelFn;this.maxR=Math.max(1.5,...scene.atoms.map(a=>V3.len(a.p)));
+    this.wrap.querySelector('[data-o=legend]').innerHTML=legendHtml||'';this.wrap.querySelector('[data-o=src]').textContent=srcText||'';const many=scene.atoms.length>18;this.opt.hideH=many;this.wrap.querySelector('input[data-o=hideH]').checked=many;this.reset();this.draw()}
+  draw(){
+    const c=this.c,dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(!w||!this.scene)return;
+    if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}
+    const x=this.ctx;x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+    const S=Math.min(w/(2*this.maxR+2),h/(1.3*this.maxR+2.4))*this.zoom,F=(this.maxR+1)*5;
+    const P=this.scene.atoms.map(a=>{const q=mv(this.R,a.p);const k=F/(F-q[2]);return{a,z:q[2],x:w/2+q[0]*S*k,y:h/2-q[1]*S*k,k,r:(0.2+0.27*EL[a.el].rc)*S*k}});
+    const items=[];
+    this.scene.bonds.forEach(([i,j,o])=>items.push({z:Math.min(P[i].z,P[j].z)-0.01,draw:()=>{
+      const A=P[i],B=P[j],mx=(A.x+B.x)/2,my=(A.y+B.y)/2,lw=Math.max(2,0.13*S*(A.k+B.k)/2);
+      const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L;const offs=o===2?[-.6,.6]:o===3?[-1,0,1]:[0];const lw2=o===1?lw:lw*0.6;
+      offs.forEach(f=>{const ox=nx*f*lw2*1.15,oy=ny*f*lw2*1.15;
+        [[A,mx,my],[B,mx,my]].forEach(([E,ex,ey])=>{x.strokeStyle='#5b6573';x.lineWidth=lw2+1.5;x.lineCap='round';x.beginPath();x.moveTo(E.x+ox,E.y+oy);x.lineTo(ex+ox,ey+oy);x.stroke();
+          x.strokeStyle=shade(COLORS[E.a.el]||'#ff69b4',E.a.el==='H'?-0.1:0.1);x.lineWidth=lw2;x.beginPath();x.moveTo(E.x+ox,E.y+oy);x.lineTo(ex+ox,ey+oy);x.stroke()})})}}));
+    P.forEach(p=>items.push({z:p.z,draw:()=>{const col=COLORS[p.a.el]||'#ff69b4';const g=x.createRadialGradient(p.x-p.r*.35,p.y-p.r*.35,p.r*.1,p.x,p.y,p.r);
+      g.addColorStop(0,shade(col,0.55));g.addColorStop(0.55,col);g.addColorStop(1,shade(col,-0.35));x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();
+      x.lineWidth=1;x.strokeStyle='rgba(0,0,0,.35)';x.stroke();
+      if(this.opt.sym&&p.a.el!=='H'&&p.r>9){const t=p.a.tag||p.a.el;x.fillStyle=lum(col)>0.55?'#111':'#fff';x.font=`600 ${Math.min(16,p.r*(t.length>2?0.62:0.8))}px system-ui,sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(t,p.x,p.y+0.5)}}}));
+    items.sort((a,b)=>a.z-b.z).forEach(it=>it.draw());
+    if(this.opt.labels&&this.labelFn){
+      [...P].sort((a,b)=>a.z-b.z).forEach(p=>{if(this.opt.hideH&&p.a.el==='H')return;const L=this.labelFn(p.a);if(!L)return;
+        x.font='700 12.5px system-ui,sans-serif';const tw=x.measureText(L.text).width+10,th=18,bx=p.x+p.r*0.55,by=p.y-p.r*0.55-th;
+        x.fillStyle=L.bg;x.strokeStyle='#fff';x.lineWidth=1.5;x.beginPath();if(x.roundRect)x.roundRect(bx,by,tw,th,8);else x.rect(bx,by,tw,th);x.fill();x.stroke();
+        x.fillStyle='#fff';x.textAlign='left';x.textBaseline='middle';x.fillText(L.text,bx+5,by+th/2+0.5)});}
+  }
+}
+const signBg=q=>q.n>0?'#2563eb':q.n<0?'#dc2626':'#6b7280';
+const LEG_SIGN='<span style="background:#2563eb">+</span><span style="background:#dc2626">−</span><span style="background:#6b7280">0</span>';
+const LEG_STUDENT='<span style="background:#15803d">your answer ✓</span><span style="background:#b42318">your answer ✗</span>';
+
+// ===================== Shared UI helpers =====================
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function ruleLine(slot){const n=RULE_NUM[slot.rule]||3;const r=RULES[n];return `Rule ${n} — ${r.title}: ${r.text}`}
+function fracNote(slot){return slot.fraction?` <span class="pill">Rule 13</span> ${esc(RULES[13].text)}`:''}
+function slotLabelHtml(s){return esc(s.label).replace(/(\d)/g,'$1')}
+async function render3D(container,an,labelFn,legend){
+  container.innerHTML='<div class="viewer"><div class="empty">Building 3D model…</div></div>';
+  let scene=null;try{scene=await buildScene(an,true)}catch(e){console.error(e)}
+  const box=container.querySelector('.viewer');
+  if(!scene){box.innerHTML=`<div class="fallback">${an.html}</div><div class="vbar">No 3D structure is available for this species. Oxidation numbers: ${an.slots.map(s=>esc(s.label)+' '+s.value.str()).join(', ')}</div>`;return}
+  const v=new Viewer(box);const notes=[];
+  if(an.parts.length>1)notes.push('Ions/molecules shown separately');
+  if(scene.missing)notes.push('some parts could not be drawn');if(scene.truncated)notes.push('only some units shown');
+  notes.push('Structure: '+scene.sources.join(', '));
+  v.set(scene,labelFn,legend,notes.join(' · '));
+}
+function correctLabel(an){return a=>{if(!a.on)return null;const q=Q.of(a.on);return{text:q.str(),bg:signBg(q)}}}
+function slotOfAtom(an,a){return an.envSlot[a.env+'|'+a.el]}
+function explHtml(an){return (an.isOrg?`<p class="small"><b>Average carbon oxidation number:</b> ${an.avgC.str()} — this is the value the sum rule alone would give.</p>`:'')+`<ol class="expl">${an.slots.map(s=>`<li><b>${esc(s.label)} = ${s.value.str()}</b> <span class="pill">Rule ${RULE_NUM[s.rule]||3}</span> ${esc(s.why)}${fracNote(s)}</li>`).join('')}</ol>`}
+function sumHtml(an,vals){
+  let tot=new Q(0),ok=true;const terms=an.slots.map(s=>{const v=vals[s.key];if(!(v instanceof Q)){ok=false;return `${s.count}(?)`}tot=tot.add(v.mul(s.count));return `${s.count}(${v.str()})`});
+  const target=Q.of(an.charge);const good=ok&&tot.eq(target);
+  return {html:`<div class="sum ${good?'good':''}"><b>Sum check:</b> ${terms.join(' + ')} = ${ok?tot.str():'…'} &nbsp;|&nbsp; must equal <b>${target.str()}</b>${ok?(good?' ✓':' ✗'):''}</div>`};
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+// ===================== REVIEW =====================
+(function(){
+  const tb=$('#rulesTable tbody');for(let n=1;n<=14;n++){const r=RULES[n];tb.insertAdjacentHTML('beforeend',`<tr><td>${n}</td><td><b>${esc(r.title)}</b>${esc(r.text)}</td><td class="ex">${esc(r.ex)}</td></tr>`)}
+  const lt=$('#ligTable');LIGAND_LIST.forEach(([f,name,q])=>{const disp=f==='C2H8N2'?'en (H<sub>2</sub>NCH<sub>2</sub>CH<sub>2</sub>NH<sub>2</sub>)':f==='C2O4'?htmlF('C2O4',-2)+' (ox)':htmlF(f,q);lt.insertAdjacentHTML('beforeend',`<tr><td class="ex">${disp}</td><td>${esc(name)}</td><td>${q===0?'0 (neutral)':Q.of(q).str()}</td></tr>`)});
+  const it=$('#ionTable');const seen=new Set();[['NH4','ammonium',1],...ANION_LIST.filter(a=>!['OCl','BrO','O2','AlH4','BH4','SiO3','BO3','AsO4','HSO3','IO4'].includes(a[0]))].forEach(([f,name,q])=>{if(seen.has(name))return;seen.add(name);it.insertAdjacentHTML('beforeend',`<tr><td class="ex">${htmlF(f,q)}</td><td>${esc(name)}</td></tr>`)});
+})();
+
+// ===================== TABS =====================
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='tab-'+b.dataset.t))});
+
+// ===================== COACHING =====================
+const coach={an:null,att:{},st:{},vals:{}};
+for(let l=1;l<=5;l++)$('#pickLevel').insertAdjacentHTML('beforeend',`<option value="${l}">Level ${l}: ${LEVELS[l].name}</option>`);
+document.querySelectorAll('#coachMode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#coachMode button').forEach(x=>x.classList.toggle('on',x===b));$('#coachOwn').style.display=b.dataset.m==='own'?'flex':'none';$('#coachPick').style.display=b.dataset.m==='pick'?'flex':'none';$('#coachErr').textContent=''});
+const ownStart=()=>startCoach($('#ownInput').value,null,$('#ownType').value==='o');
+$('#ownGo').onclick=ownStart;$('#ownInput').addEventListener('keydown',e=>{if(e.key==='Enter')ownStart()});
+$('#ownType').onchange=()=>{const o=$('#ownType').value==='o';$('#ownInput').placeholder=o?'e.g. acetone, benzoic acid or CC(=O)O':'e.g. Fe2(SO4)3 or Cr2O7^2-';$('#ownHelp').textContent=o?'Type a name or a SMILES string. Unfamiliar names are looked up on PubChem.':'See the Review tab for how to type ions and complexes.'};
+const pickQueue={};
+$('#pickType').onchange=()=>{$('#pickLevelWrap').style.display=$('#pickType').value==='o'?'none':''};
+$('#pickGo').onclick=()=>{const org=$('#pickType').value==='o';const lv=org?6:+$('#pickLevel').value;const key=lv||'any';
+  if(!pickQueue[key]||!pickQueue[key].length){const pool=(lv?PROBLEMS[lv]:[1,2,3,4,5].flatMap(l=>PROBLEMS[l])).flatMap(x=>x.series?x.items:[x]);
+    const seen=new Set();pickQueue[key]=shuffle(pool.filter(x=>{if(seen.has(x[0]))return false;seen.add(x[0]);return true}))}
+  const [f,n,t]=pickQueue[key].pop();startCoach(f,n,t==='org')};
+async function getAnalysis(input,isOrg){return isOrg?await analyzeOrganic(input,true):analyze(input)}
+async function startCoach(input,name,isOrg){
+  $('#coachErr').textContent='';if(isOrg)$('#coachErr').innerHTML='<span class="muted">Looking up the structure…</span>';
+  let an;try{an=await getAnalysis(input,isOrg)}catch(e){$('#coachErr').textContent=e.chem?e.message:'Sorry — I could not read that.';if(!e.chem)console.error(e);return}
+  $('#coachErr').textContent='';
+  coach.an=an;coach.att={};coach.st={};coach.vals={};coach.name=name||(an.isOrg?an.name:findName(an));
+  const w=$('#coachWork');
+  w.innerHTML=`<div class="card"><div class="formula">${an.html}</div><div class="name">${esc(coach.name||'')}</div>${an.isOrg?structHtml(an):''}
+   <p class="small muted" style="margin:6px 0 10px">Enter an oxidation number for each atom and press <b>Check</b>. A wrong answer earns a hint, then the rule, then the answer.</p>
+   <table class="slots"><thead><tr><th>Atom</th><th>Atoms in formula</th><th>Oxidation number</th><th></th><th>Feedback</th></tr></thead><tbody>
+   ${an.slots.map((s,i)=>`<tr data-k="${esc(s.key)}"><td><b>${esc(s.label)}</b></td><td>${s.count}</td><td><input type="text" data-i="${i}" autocomplete="off"></td><td><button class="btn ghost" data-c="${i}">Check</button></td><td class="fb" id="cfb${i}"></td></tr>`).join('')}
+   </tbody></table><div id="coachSum"></div>
+   <div class="row" style="margin-top:12px"><button class="btn" id="checkAll">Check all</button>${name?'<button class="btn ghost" id="coachNext">Next compound</button>':''}</div>
+   <div id="coachDone"></div></div>`;
+  w.querySelectorAll('input[data-i]').forEach(inp=>{inp.addEventListener('input',updCoachSum);inp.addEventListener('keydown',e=>{if(e.key==='Enter'){checkSlot(+inp.dataset.i);const nx=w.querySelector(`input[data-i="${+inp.dataset.i+1}"]`);if(nx&&!nx.disabled)nx.focus()}})});
+  w.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>checkSlot(+b.dataset.c));
+  $('#checkAll').onclick=()=>{an.slots.forEach((s,i)=>{const inp=w.querySelector(`input[data-i="${i}"]`);if(!coach.st[s.key]&&inp.value.trim())checkSlot(i)})};
+  if(name)$('#coachNext').onclick=()=>$('#pickGo').click();
+  updCoachSum();w.querySelector('input[data-i="0"]').focus();
+}
+function readVals(container,an){const vals={};an.slots.forEach((s,i)=>{const v=parseAnswer(container.querySelector(`input[data-i="${i}"]`).value);if(v instanceof Q)vals[s.key]=v;else if(v&&v.approx!==undefined)vals[s.key]=answerMatches(v,s.value)?s.value:new Q(Math.round(v.approx*100),100)});return vals}
+function updCoachSum(){const an=coach.an;$('#coachSum').innerHTML=sumHtml(an,readVals($('#coachWork'),an)).html}
+function checkSlot(i){
+  const an=coach.an,s=an.slots[i],w=$('#coachWork'),inp=w.querySelector(`input[data-i="${i}"]`),fb=$('#cfb'+i);
+  if(coach.st[s.key])return;
+  const v=parseAnswer(inp.value);
+  if(v===null){fb.innerHTML='<span class="bad">Enter a value first.</span>';return}
+  if(v===undefined){fb.innerHTML='<span class="bad">Enter a number like +3, −2, 0 or 8/3.</span>';return}
+  if(answerMatches(v,s.value)){coach.st[s.key]='ok';inp.className='ok';inp.disabled=true;inp.value=s.value.str();
+    fb.innerHTML=`<span class="ok">✓ Correct.</span> <span class="small muted">${esc(ruleLine(s).split(':')[0])}</span>${s.fraction?`<div class="fbbox rule small">${esc(RULES[13].text)}</div>`:''}`;}
+  else{const n=coach.att[s.key]=(coach.att[s.key]||0)+1;inp.className='bad';
+    if(n===1)fb.innerHTML=`<span class="bad">✗ Not quite.</span><div class="fbbox hint"><b>Hint:</b> ${esc(hintFor(s,an))}</div>`;
+    else if(n===2)fb.innerHTML=`<span class="bad">✗ Still not right.</span><div class="fbbox rule"><b>${esc(ruleLine(s).split(':')[0])}:</b> ${esc(RULES[RULE_NUM[s.rule]||3].text)}</div>`;
+    else{coach.st[s.key]='rev';inp.value=s.value.str();inp.disabled=true;inp.className='';
+      fb.innerHTML=`<span class="bad">Answer: ${s.value.str()}</span><div class="fbbox ans">${esc(s.why)}${fracNote(s)}</div>`}}
+  updCoachSum();
+  if(an.slots.every(x=>coach.st[x.key]))coachFinished();
+}
+function coachFinished(){
+  const an=coach.an;const nOk=an.slots.filter(s=>coach.st[s.key]==='ok').length;
+  const d=$('#coachDone');
+  d.innerHTML=`<div class="banner ${nOk===an.slots.length?'ok':'info'}">${nOk===an.slots.length?'All oxidation numbers correct!':`Finished — ${nOk} of ${an.slots.length} worked out on your own.`}</div>
+   <h3>3D model with oxidation numbers</h3><div id="coach3d"></div><h3>How each value is found</h3>${explHtml(an)}`;
+  render3D($('#coach3d'),an,correctLabel(an),LEG_SIGN);
+}
+
+// ===================== TESTING =====================
+const test={level:1,queue:{},an:null,name:'',tries:0,done:false,stats:{tried:0,first:0,solved:0}};
+(function(){const L=$('#levels');for(let l=1;l<=6;l++)L.insertAdjacentHTML('beforeend',`<button data-l="${l}" class="${l===1?'on':''}"><b>Level ${l}: ${LEVELS[l].name}</b><span>${LEVELS[l].desc}</span></button>`);
+  L.querySelectorAll('button').forEach(b=>b.onclick=()=>{L.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));test.level=+b.dataset.l;nextTest()})})();
+function updScore(){const s=test.stats;$('#score').innerHTML=`Problems: <b>${s.tried}</b> · Solved: <b>${s.solved}</b> · Right on first try: <b>${s.first}</b>`}
+async function nextTest(){
+  const lv=test.level;
+  if(!(test.series&&test.series.lv===lv&&test.series.idx<test.series.items.length-1)){test.series=null;
+    if(!test.queue[lv]||!test.queue[lv].length)test.queue[lv]=shuffle(PROBLEMS[lv]);
+    const it=test.queue[lv].pop();if(it.series)test.series={lv,title:it.series,items:it.items,idx:-1,log:[]};else test.item=it}
+  if(test.series){test.series.idx++;test.item=test.series.items[test.series.idx]}
+  const[f,n,t]=test.item;test.an=await getAnalysis(f,t==='org');test.name=n;test.tries=0;test.done=false;test.counted=false;
+  const an=test.an,w=$('#testWork');
+  w.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><span class="pill">Level ${lv}: ${esc(LEVELS[lv].name)}</span>${test.series?`<span class="pill" style="background:#fff3dc;color:#7a4b00">${esc(test.series.title)} — step ${test.series.idx+1} of ${test.series.items.length}</span>`:''}</div>
+   <div class="formula">${an.html}</div><div class="name">${esc(n)}</div>${an.isOrg?structHtml(an):''}
+   <table class="slots"><thead><tr><th>Atom</th><th>Atoms in formula</th><th>Oxidation number</th><th>Result</th></tr></thead><tbody>
+   ${an.slots.map((s,i)=>`<tr><td><b>${esc(s.label)}</b></td><td>${s.count}</td><td><input type="text" data-i="${i}" autocomplete="off"></td><td class="fb" id="tfb${i}"></td></tr>`).join('')}
+   </tbody></table>
+   <div class="row" style="margin-top:12px"><button class="btn" id="tSubmit">Submit</button><button class="btn ghost" id="tShow">Show answers</button><button class="btn ghost" id="tNext">Next problem</button></div>
+   <div id="tMsg"></div><div id="tResult"></div></div>`;
+  w.querySelectorAll('input[data-i]').forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const nx=w.querySelector(`input[data-i="${+inp.dataset.i+1}"]`);if(nx)nx.focus();else submitTest()}}));
+  $('#tSubmit').onclick=submitTest;$('#tShow').onclick=()=>finishTest(false,true);$('#tNext').onclick=nextTest;
+  w.querySelector('input[data-i="0"]').focus();updScore();
+}
+function structHtml(an){return `<div style="margin:10px 0 4px"><div class="small muted" style="margin-bottom:4px">Structure: each carbon has a numbered blue tag. Hydrogens are written next to the atom they are bonded to.</div><div style="border:1px solid var(--line);border-radius:10px;background:#fff;display:inline-block;max-width:100%;overflow:auto">${svg2D(an)}</div></div>`}
+function svg2D(an){const o=an.org,g=o.g,N=g.heavy,P=o.p2,S=56,pad=44;
+  const xs=P.map(p=>p[0]),ys=P.map(p=>-p[1]);const mnx=Math.min(...xs),mxx=Math.max(...xs),mny=Math.min(...ys),mxy=Math.max(...ys);
+  const W=(mxx-mnx)*S+2*pad+40,H=(mxy-mny)*S+2*pad;const X=i=>(P[i][0]-mnx)*S+pad+10,Y=i=>(-P[i][1]-mny)*S+pad;
+  let out='';
+  g.bonds.forEach(([a,b,ord])=>{if(a>=N||b>=N)return;let x1=X(a),y1=Y(a),x2=X(b),y2=Y(b);const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,sh=15;
+    x1+=ux*sh;y1+=uy*sh;x2-=ux*sh;y2-=uy*sh;const nx=-uy,ny=ux;const offs=ord===2?[-3,3]:ord===3?[-5,0,5]:[0];
+    offs.forEach(f=>out+=`<line x1="${x1+nx*f}" y1="${y1+ny*f}" x2="${x2+nx*f}" y2="${y2+ny*f}" stroke="#334155" stroke-width="2" stroke-linecap="round"/>`)});
+  for(let i=0;i<N;i++){const a=g.atoms[i],h=o.hCount[i];const ch=a.fc?(Math.abs(a.fc)>1?Math.abs(a.fc):'')+(a.fc>0?'+':'−'):'';
+    const col=a.el==='C'?'#1c2430':(COLORS[a.el]&&a.el!=='H'?shade(COLORS[a.el],-0.25):'#1c2430');
+    const txt=`${a.el}${h?'H'+(h>1?`<tspan baseline-shift="sub" font-size="11">${h}</tspan>`:''):''}${ch?`<tspan baseline-shift="super" font-size="11">${ch}</tspan>`:''}`;
+    const wch=(a.el.length+(h?1+(h>1?0.7:0):0)+(ch?0.7:0))*10+6;
+    out+=`<rect x="${X(i)-wch/2}" y="${Y(i)-11}" width="${wch}" height="22" fill="#fff"/><text x="${X(i)}" y="${Y(i)}" text-anchor="middle" dominant-baseline="central" font-family="Segoe UI,system-ui,sans-serif" font-size="17" font-weight="600" fill="${col}">${txt}</text>`;
+    const t=o.tag[i];if(t){const num=t.replace(/^[A-Za-z]+/,'');const bx=X(i)+wch/2+3,by=Y(i)-14;
+      out+=`<circle cx="${bx}" cy="${by}" r="9.5" fill="${a.el==='C'?'#2f6fb2':'#8a5a00'}"/><text x="${bx}" y="${by}" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">${num}</text>`}}
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.max(W,160)}" height="${Math.max(H,90)}" viewBox="0 0 ${Math.max(W,160)} ${Math.max(H,90)}">${out}</svg>`}
+function submitTest(){
+  if(test.done)return;const an=test.an,w=$('#testWork');const res=[];let empty=false,invalid=false;
+  an.slots.forEach((s,i)=>{const inp=w.querySelector(`input[data-i="${i}"]`);const v=parseAnswer(inp.value);if(v===null)empty=true;else if(v===undefined)invalid=true;res.push(v)});
+  if(empty||invalid){$('#tMsg').innerHTML=`<div class="banner bad">${empty?'Enter an oxidation number for every atom before submitting.':'Use numbers like +3, −2, 0 or 8/3.'}</div>`;return}
+  if(!test.counted){test.counted=true;test.stats.tried++}
+  test.tries++;let nOk=0;
+  an.slots.forEach((s,i)=>{const ok=answerMatches(res[i],s.value);if(ok)nOk++;const inp=w.querySelector(`input[data-i="${i}"]`);inp.className=ok?'ok':'bad';$('#tfb'+i).innerHTML=ok?'<span class="ok">✓</span>':'<span class="bad">✗</span>'});
+  const vals={};an.slots.forEach((s,i)=>{vals[s.key]=res[i]});test.lastVals=vals;
+  if(nOk===an.slots.length){test.stats.solved++;if(test.tries===1)test.stats.first++;finishTest(true,false)}
+  else{$('#tMsg').innerHTML=`<div class="banner bad">${nOk} of ${an.slots.length} correct. Fix the ones marked ✗ and submit again, or choose Show answers.</div>`;
+    showTest3D(false)}
+  updScore();
+}
+function showTest3D(final){
+  const an=test.an;const vals=test.lastVals||{};
+  const fn=final?correctLabel(an):(a=>{const k=slotOfAtom(an,a);const s=an.slots.find(x=>x.key===k);if(!s)return null;const v=vals[k];if(!v)return null;const ok=answerMatches(v,s.value);
+    const t=v instanceof Q?v.str():String(v.approx);return{text:t,bg:ok?'#15803d':'#b42318'}});
+  const r=$('#tResult');r.innerHTML=`<h3>${final?'3D model with the correct oxidation numbers':'3D model with your answers'}</h3><div id="test3d"></div><div id="testExpl"></div>`;
+  render3D($('#test3d'),an,fn,final?LEG_SIGN:LEG_STUDENT);
+  if(final)$('#testExpl').innerHTML=`<h3>Solution</h3>${explHtml(an)}`;
+}
+function finishTest(correct,revealed){
+  if(test.done)return;test.done=true;const an=test.an,w=$('#testWork');
+  if(revealed){if(!test.counted){test.counted=true;test.stats.tried++}
+    an.slots.forEach((s,i)=>{const inp=w.querySelector(`input[data-i="${i}"]`);const v=parseAnswer(inp.value);const ok=answerMatches(v,s.value);
+      $('#tfb'+i).innerHTML=ok?'<span class="ok">✓</span>':`<span class="bad">Answer: ${s.value.str()}</span>`;if(!ok)inp.className='bad';})}
+  w.querySelectorAll('input[data-i]').forEach(i=>i.disabled=true);$('#tSubmit').disabled=true;$('#tShow').disabled=true;
+  $('#tMsg').innerHTML=correct?`<div class="banner ok">Correct${test.tries===1?' on the first try':''}! 🎉</div>`:'<div class="banner info">Here are the answers. Study the solution, then try another.</div>';
+  showTest3D(true);updScore();$('#tNext').focus();
+  if(test.series){const S=test.series;S.log[S.idx]={name:test.name,maxC:test.an.maxC,an:test.an};
+    if(S.idx===S.items.length-1){const rows=S.log.map(l=>`<td style="text-align:center"><div class="ex" style="font-size:18px">${l.an.html}</div><div class="small muted">${esc(l.name)}</div><div style="font-weight:700;font-size:18px;color:${l.maxC>0?'#2563eb':l.maxC<0?'#dc2626':'#6b7280'}">${Q.of(l.maxC).str()}</div></td>`).join('<td style="text-align:center;font-size:22px;color:#94a3b8">→</td>');
+      $('#tResult').insertAdjacentHTML('afterbegin',`<div class="card" style="background:#fffaf0;border-color:#f3d9a4"><h3 style="margin-top:0">Series complete: ${esc(S.title)}</h3><p class="small muted">Oxidation number of the carbon being oxidized at each step:</p><table><tr>${rows}</tr></table><p class="small" style="margin-bottom:0">Each step raises that carbon's oxidation number by 2: it loses two electrons' worth of bonds to H and gains bonds to O. Each step is a two-electron oxidation.</p></div>`)}
+    else $('#tNext').textContent='Next step in series'}
+}
+nextTest();
+</script>
+</body>
+</html>
